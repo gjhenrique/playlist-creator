@@ -41,4 +41,22 @@ class Test extends FlatSpec with BeforeAndAfter {
 
     assert(playlist.playlists.size == 1)
   }
+
+  it should "return the musics of playlists and all children" in {
+
+    playlist.addMusic("music1.mp3")
+
+    val playlist1 = new Playlist
+    playlist.addMusic("music2.mp3")
+
+    val playlist2 = new Playlist
+    playlist2.addMusic("music3.mp3")
+
+    playlist1.addPlaylist(playlist2)
+    playlist.addPlaylist(playlist1)
+
+    assert(playlist.musics.contains("music1.mp3"))
+    assert(playlist.musics.contains("music2.mp3"))
+    assert(playlist.musics.contains("music3.mp3"))
+  }
 }
