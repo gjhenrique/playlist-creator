@@ -7,7 +7,17 @@ class Playlist(_name : String = null ) {
   private val _playlists = MutableList[Playlist]()
 
   private val formats = List("mp3", "wav")
-  
+
+  private val REGEX_PATTERNS = List(
+    """^[0-9]+\. """,
+    """^[0-9]+ - """,
+    """^[0-9]+ """,
+    """^\[[0-9]+\] """,
+    """^\([0-9]+\) """,
+    """ \([0-9]+\)$""",
+    """ \[[0-9]+\]$"""
+    ).mkString("|").r
+
   def musics : MutableList[String] = {
     var musicsPlaylists = MutableList[String]()
 
@@ -16,7 +26,9 @@ class Playlist(_name : String = null ) {
     _musics ++ musicsPlaylists
   }
 
-  def name : String = _name
+  def name : String = {
+    REGEX_PATTERNS.replaceAllIn(_name, "")
+  }
 
   def playlists : MutableList[Playlist] = _playlists
   

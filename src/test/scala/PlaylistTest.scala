@@ -1,6 +1,6 @@
-import org.scalatest.{BeforeAndAfter, FlatSpec}
+import org.scalatest.{Matchers, BeforeAndAfter, FlatSpec}
 
-class Test extends FlatSpec with BeforeAndAfter {
+class PlaylistTest extends FlatSpec with BeforeAndAfter with Matchers{
 
   private var playlist : Playlist = _
 
@@ -59,4 +59,23 @@ class Test extends FlatSpec with BeforeAndAfter {
     assert(playlist.musics.contains("music2.mp3"))
     assert(playlist.musics.contains("music3.mp3"))
   }
+
+  it should "return sanitized playlist name" in {
+    asssertToSanitizedPlaylistName("01. Pearl Jam", "Pearl Jam")
+    asssertToSanitizedPlaylistName("01 Pearl Jam", "Pearl Jam")
+    asssertToSanitizedPlaylistName("200", "200")
+    asssertToSanitizedPlaylistName("Disc 10 Music", "Disc 10 Music")
+    asssertToSanitizedPlaylistName("1991 - Ten", "Ten")
+    asssertToSanitizedPlaylistName("Vitalogy (1994)", "Vitalogy")
+    asssertToSanitizedPlaylistName("[1994] Vitalogy", "Vitalogy")
+    asssertToSanitizedPlaylistName("(1994) Vitalogy", "Vitalogy")
+    asssertToSanitizedPlaylistName("02 Vs (1993)", "Vs")
+    asssertToSanitizedPlaylistName("05. Yield [1993]", "Yield")
+  }
+
+  def asssertToSanitizedPlaylistName(rawName: String, sanitizedName: String) {
+    val playlist = new Playlist(rawName)
+    playlist.name shouldBe sanitizedName
+  }
+
 }

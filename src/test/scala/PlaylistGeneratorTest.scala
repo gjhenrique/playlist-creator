@@ -1,6 +1,6 @@
 import java.io.{File, FileFilter}
 import org.scalatest.{Matchers, Ignore, FlatSpec, BeforeAndAfter}
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
 
 class PlaylistGeneratorTest extends FlatSpec with BeforeAndAfter with Matchers{
 
@@ -35,27 +35,49 @@ class PlaylistGeneratorTest extends FlatSpec with BeforeAndAfter with Matchers{
   it should "have children playlists" in {
     val generator = new PlaylistGenerator("test_folder/Pearl Jam")
     val playlist = generator.createPlaylist
-    assert(playlist.playlists.size == 2)
-//    assert(playlist.musics.contains("Given To Fly.mp3"))
+    assert(playlist.playlists.size == 3)
   }
 
   it should "write playlist file to root path" in {
     generator.writePlaylistsRecursive()
 
-    val lines = Source.fromFile("test_folder/Pearl Jam.m3u").mkString
+    val lines = getPlaylistContent(List("Pearl Jam"))
     lines should include("/test_folder/Pearl Jam/Yield/Given To Fly.mp3")
   }
 
-  it should "create children playlists with appropriate separator" in {
+  it should "create children playlists with musics" in {
     generator.writePlaylistsRecursive()
 
-    val lines = Source.fromFile("test_folder/Pearl Jam - Ten.m3u").mkString
+    val lines = getPlaylistContent(List("Pearl Jam", "Ten"))
     lines should include("/test_folder/Pearl Jam/Ten/Dirty Frank.mp3")
+  }
+
+  it should "create greatchildren playlists with musics" in {
+    generator.writePlaylistsRecursive();
+    val lines = getPlaylistContent(List("Pearl Jam", "Rearviewmirror", "CD 1"))
+    lines should include("/test_folder/Pearl Jam/Rearviewmirror/CD 1/Alive.mp3")
+  }
+
+  it should "create playlist with the root playlist" in {
+    generator.writePlaylistsRecursive()
+    val lines = getPlaylistContent(List("test_folder"))
+    lines should include("music1.mp3")
+    lines should include("/test_folder/Pearl Jam/Rearviewmirror/CD 1/Alive.mp3")
   }
 
   it should "not include folder with non music files" in {
     generator.writePlaylistsRecursive()
 
     assert(!(new File("test_folder/Pearl Jam - Info.m3u").exists()))
+  }
+
+  it should "create playlist with sanitized name" in {
+    generator.writePlaylistsRecursive()
+    assert(!(new File("test_folder/Pearl Jam - Yield.m3u").exists()))
+  }
+  def getPlaylistContent(files : List[String]) : String = {
+    val playlistName = files.mkString(generator.PLAYLIST_SEPARATOR)
+    val path = "test_folder/" + generator.PLAYLIST_FOLDER_NAME + "/" + playlistName + ".m3u"
+    Source.fromFile(path).mkString
   }
 }
