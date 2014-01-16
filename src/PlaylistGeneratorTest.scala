@@ -52,6 +52,7 @@ class PlaylistGeneratorTest extends FlatSpec with BeforeAndAfter with Matchers{
     val lines = Source.fromFile("test_folder/Pearl Jam - Ten.m3u").mkString
     lines should include("/test_folder/Pearl Jam/Ten/Dirty Frank.mp3")
   }
+
   it should "not include folder with non music files" in {
     generator.writePlaylistsRecursive()
 

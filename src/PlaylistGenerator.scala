@@ -32,21 +32,22 @@ class PlaylistGenerator(_path : String) {
 
     for(playlist <- playlist.playlists) {
 
-      val playlistName = if(name == "" || name == null) playlist.name else name + " - " + playlist.name
-
-      val playlistFile = new File(path + File.separator + playlistName + ".m3u")
-//      val playlistFile = new File(playlistName + ".m3u")
-      val writer = new PrintWriter(playlistFile)
-
-      for(music <- playlist.musics) {
-        writer.println(music)
-      }
-
-      writer.close()
-
+      writeMusicsToFile(name, playlist)
       writePlaylistsRecursive(playlist, playlist.name)
     }
   }
 
+  private def writeMusicsToFile(previousPlaylistName : String, playlist : Playlist) {
+
+    val playlistName = if(previousPlaylistName == "" || previousPlaylistName == null) playlist.name else previousPlaylistName + " - " + playlist.name
+    val playlistFile = new File(path + File.separator + playlistName + ".m3u")
+    val writer = new PrintWriter(playlistFile)
+    for(music <- playlist.musics) {
+        writer.println(music)
+      }
+
+    writer.close()
+
+  }
 
 }
