@@ -15,7 +15,8 @@ class Playlist(_name : String = null ) {
     """^\[[0-9]+\] """,
     """^\([0-9]+\) """,
     """ \([0-9]+\)$""",
-    """ \[[0-9]+\]$"""
+    """ \[[0-9]+\]$""",
+    """ - [0-9]+$"""
     ).mkString("|").r
 
   def musics : MutableList[String] = {
@@ -48,7 +49,7 @@ class Playlist(_name : String = null ) {
 
     for(playlist <- playlists) {
       val valid = playlist.valid
-      if(valid == true)
+      if(valid)
         return valid
     }
     false

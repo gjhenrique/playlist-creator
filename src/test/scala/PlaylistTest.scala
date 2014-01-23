@@ -8,7 +8,7 @@ class PlaylistTest extends FlatSpec with BeforeAndAfter with Matchers{
   private var validPlaylist : Playlist = _
 
   before {
-    playlist = new Playlist;
+    playlist = new Playlist
 
     invalidPlaylist = new Playlist
     validPlaylist = new Playlist
@@ -71,6 +71,7 @@ class PlaylistTest extends FlatSpec with BeforeAndAfter with Matchers{
     asssertToSanitizedPlaylistName("(1994) Vitalogy", "Vitalogy")
     asssertToSanitizedPlaylistName("02 Vs (1993)", "Vs")
     asssertToSanitizedPlaylistName("05. Yield [1993]", "Yield")
+    asssertToSanitizedPlaylistName("Yield - 1993", "Yield")
   }
 
   def asssertToSanitizedPlaylistName(rawName: String, sanitizedName: String) {
