@@ -6,7 +6,7 @@ class Playlist(_name : String = null ) {
 
   private val _playlists = MutableList[Playlist]()
 
-  private val formats = List("mp3", "wav")
+  private val formats = List("mp3", "wav", "m4a")
 
   private val REGEX_PATTERNS = List(
     """^[0-9]+\. """,
